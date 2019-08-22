@@ -1,0 +1,5 @@
+twine
+m2r
+python-language-server[all]
+flake8
+-r requirements.txt
