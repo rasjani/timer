@@ -32,9 +32,13 @@ Example No 3 Will Fail
   Run Keyword And Expect Error    STARTS: Difference
   ...                             Verify Single Timer   3   0    ${TEST NAME}
 
-
-Final Verify
+Final Verify Failure
   [Setup]       No Operation
   [Teardown]    No Operation
   Run Keyword And Expect Error    STARTS: Difference
   ...                             Verify All Timers
+
+Final Verify Without Failing
+  [Setup]       No Operation
+  [Teardown]    No Operation
+  Verify All Timers   False

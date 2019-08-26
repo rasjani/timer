@@ -1,6 +1,6 @@
 from robotlibcore import DynamicCore, keyword
 from robot.errors import DataError
-from robot.utils import timestr_to_secs, secs_to_timestr
+from robot.utils import timestr_to_secs, secs_to_timestr, is_truthy
 from robot.api import logger
 from timeit import default_timer as timer
 
@@ -102,16 +102,17 @@ class Timer(DynamicCore):
         self.benchmarks[benchmark_name]['higher_than'] = timestr_to_millisecs(higher_than)
 
     @keyword
-    def verify_all_timers(self, fail=True):
+    def verify_all_timers(self, fail_on_errors=True):
         """
         Verifies all timers within a testsuite. Timer's must be done, eg `Start Timer` and `Stop Timer` keywords must have been called for it and it has to have been configured with `Configure Timer` keyword and lower_than parameter.
         Keyword will also write a html table into the logs that shows all finished timers and their status.
         === Parameters ===
-        ``fail`` Should we throw an error if any timers are not within given ranges. Defaults to True
+        ``fail_on_errors`` Should we throw an error if any timers are not within given ranges. Defaults to True
         === Example: ===
         | Verify All Timers |
         """
         failures = []
+        fail_on_errors = is_truthy(fail_on_errors)
         html = ["<table><tr><th>Timer</th><th>Lower than</th><th>Execution Time</th><th>Higher Than</th></tr>"]
         for item in filter(lambda timer: timer_done(timer[1]), self.benchmarks.items()):
             benchmark_name = item[0]
@@ -128,7 +129,7 @@ class Timer(DynamicCore):
         html.append("</table")
         logger.info("".join(html), html=True)
         if failures:
-            if fail:
+            if fail_on_errors:
                 raise AssertionError("\n".join(failures))
             else:
                 logger.warn("\n".join(failures))
