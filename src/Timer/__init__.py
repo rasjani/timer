@@ -30,9 +30,12 @@ def assert_string(benchmark_name, difference, lower_than, higher_than):
 
 
 class Timer(DynamicCore):
+    """ Timer is small utility library that allows measuring the x amount of events within a single suite without the need to implement timing information into a separate scripts via robot.result api's.
+    Library allows multiple timers to be ongoing at any time by providing a benchmark a name or just a single benchmark if no name is given.
+
+    Each single timer can then be verified if its duration was within a given range or just lower than what was expected or all timers can be verified in one go if they where configured properly.
     """
-    """
-    ROBOT_LIBRARY_SCOPE = 'GLOBAL'
+    ROBOT_LIBRARY_SCOPE = 'TEST SUITE'
     ROBOT_LIBRARY_VERSION = __version__
 
     def __init__(self):
@@ -42,26 +45,48 @@ class Timer(DynamicCore):
     @keyword
     def start_timer(self, benchmark_name='default'):
         """
+        Starts a single timer
+        === Parameters ===
+        ``benchmark_name`` Name of the benchmark, optional. Defaults to 'default'
+
+        === Example: ===
+        | Start Timer | mytimer |
         """
-        higher = 0
-        lower = None
         # TODO: Maybe issue a warning when overwriting existing timers ?
         if benchmark_name in self.benchmarks:
-            self.benchmarks[benchmark_name]['start'] =  timer()
-            self.benchmarks[benchmark_name]['stop'] =  None
+            self.benchmarks[benchmark_name]['start'] = timer()
+            self.benchmarks[benchmark_name]['stop'] = None
         else:
             self.benchmarks[benchmark_name] = {'start': timer(), 'stop': None, 'lower_than': None, 'higher_than': 0}
 
     @keyword
     def stop_timer(self, benchmark_name='default'):
         """
+        Stops a single timer
+        === Parameters ===
+        ``benchmark_name`` Name of the benchmark, optional. Defaults to 'default'
+
+        === Example: ===
+        | Stop Timer | mytimer |
         """
         if benchmark_name not in self.benchmarks:
             raise DataError('Benchmark "%s" not started.' % benchmark_name)
         self.benchmarks[benchmark_name]['stop'] = timer()
 
     @keyword
-    def configure_timer(self, lower_than, higher_than, benchmark_name='default'):
+    def configure_timer(self, lower_than, higher_than=0, benchmark_name='default'):
+        """
+        Configures/creates a single timer so that it can be verified later on.
+        === Parameters ===
+        ``lower_than`` Timestr value to check if the timer's total execution time is lower than.
+        ``higher_than`` Timestr value to check if the timer's minimum value is higher than this, optional. Defaults to '0'
+        ``benchmark_name`` Name of the benchmark, optional. Defaults to 'default'
+
+        === Example: ===
+        This will create a timer by name "anothertimer" that can then be checked that it lasted at least 5 seconds but not more than 10.
+        | Configure Timer   | 10 seconds | 5 seconds | anothertimer |
+
+        """
         if benchmark_name not in self.benchmarks:
             self.benchmarks[benchmark_name] = {'start': None, 'stop': None, 'lower_than': None, 'higher_than': 0}
 
@@ -70,6 +95,11 @@ class Timer(DynamicCore):
 
     @keyword
     def verify_all_timers(self):
+        """
+        Verifies all timers within a testsuite. Timer's must be done, eg `Start Timer` and `Stop Timer` keywords must have been called for it and it has to have been configured with `Configure Timer` keyword and lower_than parameter.
+        === Example: ===
+        | Verify All Timers |
+        """
         failures = []
         for item in filter(lambda timer: timer_done(timer[1]), self.benchmarks.items()):
             benchmark_name = item[0]
@@ -87,6 +117,17 @@ class Timer(DynamicCore):
     @keyword
     def verify_single_timer(self, lower_than, higher_than=0, benchmark_name='default'):
         """
+        Verifies a single timer.
+        === Parameters ===
+        ``lower_than`` Timestr value to check if the timer's total execution time is lower than.
+        ``higher_than`` Timestr value to check if the timer's minimum value is higher than this, optional. Defaults to '0'
+        ``benchmark_name`` Name of the benchmark, optional. Defaults to 'default'
+        === Example ===
+        | Start Timer           | yetananother |
+        | Sleep                 | 3 Seconds    |
+        | Stop Timer            | yetananother |
+        | Verify Single Timer   | 4 Seconds    | benchmarkname=yetananother |
+
         """
         if benchmark_name not in self.benchmarks:
             raise DataError('Benchmark "%s" not started.' % benchmark_name)
