@@ -13,6 +13,7 @@ def html_row(status, benchmark_name, lower_than, difference, higher_than):
     higher_than = secs_to_timestr(ms_to_s(higher_than))
     return '<tr class="{}"><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>'.format(status, benchmark_name, lower_than, difference, higher_than)
 
+
 def timestr_to_millisecs(timestr):
     return int(timestr_to_secs(timestr) * 1000)
 
@@ -126,8 +127,11 @@ class Timer(DynamicCore):
 
         html.append("</table")
         logger.info("".join(html), html=True)
-        if fail and failures:
-            raise AssertionError("\n".join(failures))
+        if failures:
+            if fail:
+                raise AssertionError("\n".join(failures))
+            else:
+                logger.warn("\n".join(failures))
 
         if failures:
             return False
