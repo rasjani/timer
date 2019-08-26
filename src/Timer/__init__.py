@@ -161,13 +161,16 @@ class Timer(DynamicCore):
         logger.trace("Timer::verify_single_timer({},{},{})".format(lower_than, higher_than, benchmark_name))
         if benchmark_name not in self.benchmarks:
             raise DataError('Benchmark "%s" not started.' % benchmark_name)
+
+        self.configure_timer(lower_than, higher_than, benchmark_name)
+
         benchmark_data = self.benchmarks[benchmark_name]
         if not benchmark_data['stop']:
             raise DataError('Benchmark "%s" not finished.' % benchmark_name)
 
         difference = int((benchmark_data['stop'] - benchmark_data['start']) * 1000)
-        lower_than = timestr_to_millisecs(lower_than)
-        higher_than = timestr_to_millisecs(higher_than)
+        lower_than = benchmark_data['lower_than']
+        higher_than = benchmark_data['higher_than']
         if not _is_within_range(difference, lower_than, higher_than):
             raise AssertionError(assert_string(benchmark_name, difference, lower_than, higher_than))
         return True
