@@ -48,7 +48,7 @@ class Timer(DynamicCore):
         # TODO: Maybe issue a warning when overwriting existing timers ?
         if benchmark_name in self.benchmarks:
             self.benchmarks[benchmark_name]['start'] =  timer()
-            self.benchmarks[benchmark_name]['stop'] =  0
+            self.benchmarks[benchmark_name]['stop'] =  None
         else:
             self.benchmarks[benchmark_name] = {'start': timer(), 'stop': None, 'lower_than': None, 'higher_than': 0}
 
