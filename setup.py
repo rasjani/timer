@@ -20,7 +20,6 @@ exec(compile(open(VERSION_PATH).read(), VERSION_PATH, 'exec'))
 with open(join(CWD, 'requirements.txt'), encoding="utf-8") as f:
     REQUIREMENTS = f.read().splitlines()
 
-REQUIREMENTS.append("robotlibcore @ https://github.com/rasjani/PythonLibCore/archive/v1.0.2.tar.gz")
 CLASSIFIERS='''
 Development Status :: 4 - Beta
 Environment :: Console
