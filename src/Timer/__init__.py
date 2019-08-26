@@ -43,7 +43,7 @@ class Timer(DynamicCore):
 
     Each single timer can then be verified if its duration was within a given range or just lower than what was expected or all timers can be verified in one go if they where configured properly.
     """
-    ROBOT_LIBRARY_SCOPE = 'TEST SUITE'
+    ROBOT_LIBRARY_SCOPE = 'GLOBAL'
     ROBOT_LIBRARY_VERSION = __version__
 
     def __init__(self):
@@ -146,7 +146,7 @@ class Timer(DynamicCore):
     @keyword
     def verify_single_timer(self, lower_than, higher_than=0, benchmark_name='default'):
         """
-        Verifies a single timer.
+        Verifies a single timer. Will call `Configure Timer` with same parameters if timer has been succesfully stopped.
         === Parameters ===
         ``lower_than`` Timestr value to check if the timer's total execution time is lower than.
         ``higher_than`` Timestr value to check if the timer's minimum value is higher than this, optional. Defaults to '0'
@@ -179,7 +179,7 @@ class Timer(DynamicCore):
     def remove_all_timers(self):
         logger.trace("Timer::remove_all_timers()")
         """
-        Removes all timers that have been configured, started or stopped.
+        Removes all timers that have been configured, started or stopped. This is useful in case you want to produce per suite or per test case reports as then you can remove all timers in corresponding teardowns.
         """
         self.benchmarks = {}
 
