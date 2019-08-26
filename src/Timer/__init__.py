@@ -117,7 +117,7 @@ class Timer(DynamicCore):
         logger.trace("Timer::verify_all_timers({})".format(fail_on_errors))
         failures = []
         fail_on_errors = is_truthy(fail_on_errors)
-        html = ["<table><tr><th>Timer</th><th>Lower than</th><th>Execution Time</th><th>Higher Than</th></tr>"]
+        html = ['<table class="statistics"><tr><th>Timer</th><th>Lower than</th><th>Execution Time</th><th>Higher Than</th></tr>']
         for item in filter(lambda timer: timer_done(timer[1]), self.benchmarks.items()):
             benchmark_name = item[0]
             benchmark_data = item[1]
