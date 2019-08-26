@@ -8,6 +8,9 @@ __version__ = '0.0.1'
 
 
 def html_row(status, benchmark_name, lower_than, difference, higher_than):
+    difference = secs_to_timestr(ms_to_s(difference))
+    lower_than = secs_to_timestr(ms_to_s(lower_than))
+    higher_than = secs_to_timestr(ms_to_s(higher_than))
     return '<tr class="{}"><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>'.format(status, benchmark_name, lower_than, difference, higher_than)
 
 def timestr_to_millisecs(timestr):
