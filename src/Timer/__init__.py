@@ -1,10 +1,14 @@
 from robotlibcore import DynamicCore, keyword
 from robot.errors import DataError
 from robot.utils import timestr_to_secs, secs_to_timestr
+from robot.api import logger
 from timeit import default_timer as timer
 
 __version__ = '0.0.1'
 
+
+def html_row(status, benchmark_name, lower_than, difference, higher_than):
+    return '<tr class="{}"><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>'.format(status, benchmark_name, lower_than, difference, higher_than)
 
 def timestr_to_millisecs(timestr):
     return int(timestr_to_secs(timestr) * 1000)
@@ -94,13 +98,17 @@ class Timer(DynamicCore):
         self.benchmarks[benchmark_name]['higher_than'] = timestr_to_millisecs(higher_than)
 
     @keyword
-    def verify_all_timers(self):
+    def verify_all_timers(self, fail=True):
         """
         Verifies all timers within a testsuite. Timer's must be done, eg `Start Timer` and `Stop Timer` keywords must have been called for it and it has to have been configured with `Configure Timer` keyword and lower_than parameter.
+        Keyword will also write a html table into the logs that shows all finished timers and their status.
+        === Parameters ===
+        ``fail`` Should we throw an error if any timers are not within given ranges. Defaults to True
         === Example: ===
         | Verify All Timers |
         """
         failures = []
+        html = ["<table><tr><th>Timer</th><th>Lower than</th><th>Execution Time</th><th>Higher Than</th></tr>"]
         for item in filter(lambda timer: timer_done(timer[1]), self.benchmarks.items()):
             benchmark_name = item[0]
             benchmark_data = item[1]
@@ -108,9 +116,18 @@ class Timer(DynamicCore):
             lower_than = benchmark_data['lower_than']
             higher_than = benchmark_data['higher_than']
             if not _is_within_range(difference, lower_than, higher_than):
+                html.append(html_row("fail", benchmark_name, lower_than, difference, higher_than))
                 failures.append(assert_string(benchmark_name, difference, lower_than, higher_than))
-        if failures:
+            else:
+                html.append(html_row("pass", benchmark_name, lower_than, difference, higher_than))
+
+        html.append("</table")
+        logger.info("".join(html), html=True)
+        if fail and failures:
             raise AssertionError("\n".join(failures))
+
+        if failures:
+            return False
 
         return True
 
