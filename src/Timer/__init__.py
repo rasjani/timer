@@ -60,6 +60,7 @@ class Timer(DynamicCore):
         === Example: ===
         | Start Timer | mytimer |
         """
+        logger.trace("Timer::start_timer({})".format(benchmark_name))
         # TODO: Maybe issue a warning when overwriting existing timers ?
         if benchmark_name in self.benchmarks:
             self.benchmarks[benchmark_name]['start'] = timer()
@@ -69,6 +70,7 @@ class Timer(DynamicCore):
 
     @keyword
     def stop_timer(self, benchmark_name='default'):
+        logger.trace("Timer::stop_timer({})".format(benchmark_name))
         """
         Stops a single timer
         === Parameters ===
@@ -95,6 +97,7 @@ class Timer(DynamicCore):
         | Configure Timer   | 10 seconds | 5 seconds | anothertimer |
 
         """
+        logger.trace("Timer::configure_timer({},{}, {})".format(lower_than, higher_than, benchmark_name))
         if benchmark_name not in self.benchmarks:
             self.benchmarks[benchmark_name] = {'start': None, 'stop': None, 'lower_than': None, 'higher_than': 0}
 
@@ -111,6 +114,7 @@ class Timer(DynamicCore):
         === Example: ===
         | Verify All Timers |
         """
+        logger.trace("Timer::verify_all_timers({})".format(fail_on_errors))
         failures = []
         fail_on_errors = is_truthy(fail_on_errors)
         html = ["<table><tr><th>Timer</th><th>Lower than</th><th>Execution Time</th><th>Higher Than</th></tr>"]
@@ -154,6 +158,7 @@ class Timer(DynamicCore):
         | Verify Single Timer   | 4 Seconds    | benchmarkname=yetananother |
 
         """
+        logger.trace("Timer::verify_single_timer({},{},{})".format(lower_than, higher_than, benchmark_name))
         if benchmark_name not in self.benchmarks:
             raise DataError('Benchmark "%s" not started.' % benchmark_name)
         benchmark_data = self.benchmarks[benchmark_name]
@@ -169,6 +174,7 @@ class Timer(DynamicCore):
 
     @keyword
     def remove_all_timers(self):
+        logger.trace("Timer::remove_all_timers()")
         """
         Removes all timers that have been configured, started or stopped.
         """
@@ -181,5 +187,6 @@ class Timer(DynamicCore):
         === Parameters ===
         ``benchmark_name`` Name of the benchmark, optional. Defaults to 'default'
         """
+        logger.trace("Timer::remove_single_timer({})".format(benchmark_name))
         if benchmark_name in self.benchmarks:
             del self.benchmarks[benchmark_name]
