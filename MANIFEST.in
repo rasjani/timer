@@ -1,0 +1,4 @@
+recursive-exclude atest *
+exclude .gitignore
+exclude requirements-dev.txt
+include requirements.txt
