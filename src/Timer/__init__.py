@@ -165,3 +165,20 @@ class Timer(DynamicCore):
         if not _is_within_range(difference, lower_than, higher_than):
             raise AssertionError(assert_string(benchmark_name, difference, lower_than, higher_than))
         return True
+
+    @keyword
+    def remove_all_timers(self):
+        """
+        Removes all timers that have been configured, started or stopped.
+        """
+        self.benchmarks = {}
+
+    @keyword
+    def remove_single_timer(self, benchmark_name='default'):
+        """
+        Removes a single timer data
+        === Parameters ===
+        ``benchmark_name`` Name of the benchmark, optional. Defaults to 'default'
+        """
+        if benchmark_name in self.benchmarks:
+            del self.benchmarks[benchmark_name]
