@@ -3,8 +3,9 @@ from robot.errors import DataError
 from robot.utils import timestr_to_secs, secs_to_timestr, is_truthy
 from robot.api import logger
 from timeit import default_timer as timer
+from .version import VERSION
 
-__version__ = '0.0.1'
+__version__ = VERSION
 
 
 def html_row(status, benchmark_name, lower_than, difference, higher_than):
@@ -54,10 +55,10 @@ class Timer(DynamicCore):
     def start_timer(self, benchmark_name='default'):
         """
         Starts a single timer
-        === Parameters ===
-        ``benchmark_name`` Name of the benchmark, optional. Defaults to 'default'
+        Parameters:
+        - ``benchmark_name`` Name of the benchmark, optional. Defaults to 'default'
 
-        === Example: ===
+        Example:
         | Start Timer | mytimer |
         """
         logger.trace("Timer::start_timer({})".format(benchmark_name))
@@ -73,10 +74,10 @@ class Timer(DynamicCore):
         logger.trace("Timer::stop_timer({})".format(benchmark_name))
         """
         Stops a single timer
-        === Parameters ===
-        ``benchmark_name`` Name of the benchmark, optional. Defaults to 'default'
+        Parameters:
+        - ``benchmark_name`` Name of the benchmark, optional. Defaults to 'default'
 
-        === Example: ===
+        Example:
         | Stop Timer | mytimer |
         """
         if benchmark_name not in self.benchmarks:
@@ -87,12 +88,12 @@ class Timer(DynamicCore):
     def configure_timer(self, lower_than, higher_than=0, benchmark_name='default'):
         """
         Configures/creates a single timer so that it can be verified later on.
-        === Parameters ===
-        ``lower_than`` Timestr value to check if the timer's total execution time is lower than.
-        ``higher_than`` Timestr value to check if the timer's minimum value is higher than this, optional. Defaults to '0'
-        ``benchmark_name`` Name of the benchmark, optional. Defaults to 'default'
+        Parameters:
+        - ``lower_than`` Timestr value to check if the timer's total execution time is lower than.
+        - ``higher_than`` Timestr value to check if the timer's minimum value is higher than this, optional. Defaults to '0'
+        - ``benchmark_name`` Name of the benchmark, optional. Defaults to 'default'
 
-        === Example: ===
+        Example:
         This will create a timer by name "anothertimer" that can then be checked that it lasted at least 5 seconds but not more than 10.
         | Configure Timer   | 10 seconds | 5 seconds | anothertimer |
 
@@ -109,10 +110,10 @@ class Timer(DynamicCore):
         """
         Verifies all timers within a testsuite. Timer's must be done, eg `Start Timer` and `Stop Timer` keywords must have been called for it and it has to have been configured with `Configure Timer` keyword and lower_than parameter.
         Keyword will also write a html table into the logs that shows all finished timers and their status.
-        === Parameters ===
-        ``fail_on_errors`` Should we throw an error if any timers are not within given ranges. Defaults to True
-        === Example: ===
-        | Verify All Timers |
+        Parameters:
+        - ``fail_on_errors`` Should we throw an error if any timers are not within given ranges. Defaults to True
+        Example:
+        | Verify All Timers | fail_on_errors=False |
         """
         logger.trace("Timer::verify_all_timers({})".format(fail_on_errors))
         failures = []
@@ -147,15 +148,15 @@ class Timer(DynamicCore):
     def verify_single_timer(self, lower_than, higher_than=0, benchmark_name='default'):
         """
         Verifies a single timer. Will call `Configure Timer` with same parameters if timer has been succesfully stopped.
-        === Parameters ===
-        ``lower_than`` Timestr value to check if the timer's total execution time is lower than.
-        ``higher_than`` Timestr value to check if the timer's minimum value is higher than this, optional. Defaults to '0'
-        ``benchmark_name`` Name of the benchmark, optional. Defaults to 'default'
-        === Example ===
-        | Start Timer           | yetananother |
-        | Sleep                 | 3 Seconds    |
-        | Stop Timer            | yetananother |
-        | Verify Single Timer   | 4 Seconds    | benchmarkname=yetananother |
+        Parameters:
+        - ``lower_than`` Timestr value to check if the timer's total execution time is lower than.
+        - ``higher_than`` Timestr value to check if the timer's minimum value is higher than this, optional. Defaults to '0'
+        - ``benchmark_name`` Name of the benchmark, optional. Defaults to 'default'
+        Example:
+        | `Start Timer` | yetananother | |
+        | Sleep  | 5 Seconds | |
+        | `Stop Timer` | yetananother | |
+        | `Verify Single Timer` | 4 Seconds | benchmarkname=yetananother |
 
         """
         logger.trace("Timer::verify_single_timer({},{},{})".format(lower_than, higher_than, benchmark_name))
@@ -177,18 +178,20 @@ class Timer(DynamicCore):
 
     @keyword
     def remove_all_timers(self):
-        logger.trace("Timer::remove_all_timers()")
         """
         Removes all timers that have been configured, started or stopped. This is useful in case you want to produce per suite or per test case reports as then you can remove all timers in corresponding teardowns.
         """
+        logger.trace("Timer::remove_all_timers()")
         self.benchmarks = {}
 
     @keyword
     def remove_single_timer(self, benchmark_name='default'):
         """
         Removes a single timer data
-        === Parameters ===
-        ``benchmark_name`` Name of the benchmark, optional. Defaults to 'default'
+        Parameters:
+        - ``benchmark_name`` Name of the benchmark, optional. Defaults to 'default'
+        Example:
+        | Remove Single Timer | yetananothertimer |
         """
         logger.trace("Timer::remove_single_timer({})".format(benchmark_name))
         if benchmark_name in self.benchmarks:
