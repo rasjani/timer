@@ -17,6 +17,7 @@ Each single timer can then be verified if its duration was within a given range 
 ```robotframework
 *** Settings ***
 Library         Timer
+Suite Teardown    Verify Benchmark
 Test Setup      Benchmark Setup
 Test Teardown   Benchmark TearDown
 
@@ -25,7 +26,7 @@ Benchmark Setup
   Start Timer   ${TEST NAME}
 Benchmark TearDown
   Stop Timer    ${TEST NAME}
-  Timer Results Within    3 seconds   0 seconds   ${TEST NAME}
+  Verify Single Timer    3 seconds   0 seconds   ${TEST NAME}
 
 *** Test Cases ***
 Example No 1 Passes
@@ -36,6 +37,9 @@ Example No 2 Passes
 
 Example No 3 Will Fail
   Sleep   3 second
+
+Verify Benchmark
+  Verify All Timers   fail_on_errors=False
 ```
 
 
