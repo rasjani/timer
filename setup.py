@@ -29,8 +29,9 @@ Intended Audience :: Information Technology
 Intended Audience :: System Administrators
 License :: OSI Approved :: MIT License
 Programming Language :: Python :: 3
-Programming Language :: Python :: 3.6
 Programming Language :: Python :: 3.7
+Programming Language :: Python :: 3.8
+Programming Language :: Python :: 3.9
 Topic :: Software Development :: Libraries
 Topic :: Software Development :: Quality Assurance
 Topic :: Software Development :: Testing
@@ -54,5 +55,4 @@ setup(name="robotframework-{}".format(PACKAGE_NAME.lower()),
       packages=[PACKAGE_NAME],
       package_dir={PACKAGE_NAME: 'src/{}'.format(PACKAGE_NAME)},
       install_requires=REQUIREMENTS,
-      dependency_links=['https://github.com/rasjani/PythonLibCore/archive/v1.0.2.tar.gz'],
       zip_safe=False)

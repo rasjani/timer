@@ -1,2 +1,2 @@
 robotframework
-robotlibcore-temp
+robotframework-pythonlibcore
