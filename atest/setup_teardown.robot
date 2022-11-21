@@ -5,12 +5,14 @@ Test Teardown   Benchmark TearDown
 
 *** Keywords ***
 Benchmark Setup
+  Remove All Timers
   Configure Timer   3 seconds   0 seconds   ${TEST NAME}
   Start Timer   ${TEST NAME}
 
 Benchmark TearDown
   Stop Timer    ${TEST NAME}
   Verify Single Timer    3 seconds   0 seconds   ${TEST NAME}
+  Remove All Timers
 
 *** Test Cases ***
 Example No 1 Passes
