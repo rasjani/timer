@@ -35,7 +35,7 @@ def assert_string(benchmark_name, difference, lower_than, higher_than):
     difference = secs_to_timestr(ms_to_s(difference))
     lower_than = secs_to_timestr(ms_to_s(lower_than))
     higher_than = secs_to_timestr(ms_to_s(higher_than))
-    return 'Difference ({}) in ”{}" is not in between {} and {}'.format(difference, benchmark_name, lower_than, higher_than)
+    return 'Difference ({}) in "{}" is not in between {} and {}'.format(difference, benchmark_name, lower_than, higher_than)
 
 
 class Timer(DynamicCore):
